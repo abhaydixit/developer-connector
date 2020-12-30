@@ -26,7 +26,6 @@ router.get("/me", auth, async (req, res) => {
 // @route   GET api/profile
 // @desc    Create or update user profile
 // @access  Private
-
 router.post(
     '/', 
     [
@@ -61,6 +60,7 @@ router.post(
             linkedin,
         } = req.body;
 
+        
         // Build profile object
         const profileFields = {};
         profileFields.user = req.user.id;
@@ -74,6 +74,7 @@ router.post(
             profileFields.skills = skills.split(',').map(skill => skill.trim());
         }
 
+        // console.log(profileFields);
         // Build social object
         profileFields.social = {}
         if(youtube) profileFields.social.youtube = youtube;
@@ -84,14 +85,13 @@ router.post(
 
         try{
             let profile = await Profile.findOne({user: req.user.id});
-
             if(profile){
                 profile = await Profile.findByIdAndUpdate(
-                    {user: req.user.id},
+                    {_id: profile._id},
                     {$set: profileFields},
                     {new: true}
                 );
-
+                console.log("***********", profile)
                 return res.json(profile);
             }
 
@@ -100,8 +100,25 @@ router.post(
             await profile.save();
             res.json(profile);
         }catch(err){
+            console.error(err.message);
             res.status(500).send('Server Error');
         }
     }
 );
+
+
+// @route   GET api/profile
+// @desc    Get all profile
+// @access  Public
+
+router.get('/', async ()=> {
+    try {
+        const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+        res.json(profiles)
+    } catch (error) {
+        console.error(err.message);
+        res.status(500).send('Server Error');
+    }
+})
+
 module.exports = router;
