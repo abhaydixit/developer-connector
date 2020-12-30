@@ -111,12 +111,12 @@ router.post(
 // @desc    Get all profile
 // @access  Public
 
-router.get('/', async ()=> {
+router.get('/', async (req, res) => {
     try {
-        const profiles = await Profile.find().populate('user', ['name', 'avatar']);
+        const profiles = await Profile.find().populate('users', ['name', 'avatar']);
         res.json(profiles)
     } catch (error) {
-        console.error(err.message);
+        console.error(error.message);
         res.status(500).send('Server Error');
     }
 })
