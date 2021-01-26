@@ -6,8 +6,8 @@ import {
   REGISTER_FAIL,
   USER_LOADED,
   AUTH_ERROR,
-  LOGIN_FAIL,
   LOGIN_SUCCESS,
+  LOGIN_FAIL,
   LOGOUT,
 } from "./types";
 
@@ -61,7 +61,7 @@ export const register = ({ name, email, password }) => async (dispatch) => {
 };
 
 //Login User
-export const login = ({ email, password }) => async (dispatch) => {
+export const login = (email, password) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
